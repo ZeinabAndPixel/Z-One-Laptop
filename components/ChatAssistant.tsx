@@ -8,10 +8,14 @@ const ChatAssistant: React.FC = () => {
   const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
 
   const handleSend = async () => {
+    // ESTO ES PARA DEPURAR (DEBUG)
+const apiKey = import.meta.env.VITE_GOOGLE_AI_KEY;
+console.log("¿Qué llave ve el código?:", apiKey ? "Una llave que empieza por " + apiKey.substring(0, 5) : "NADA (está vacía ❌)");
     if (!input.trim()) return;
     
     const userMsg = { role: 'user', text: input };
     setMessages([...messages, userMsg]);
+    console.log("¿Mi llave existe?", !!import.meta.env.VITE_GOOGLE_AI_KEY);
     setInput('');
 
     try {
