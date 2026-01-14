@@ -8,38 +8,33 @@ const ChatAssistant: React.FC = () => {
   const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
 
   const handleSend = async () => {
-    // 1. Verificación de la Llave (Debug)
     const apiKey = import.meta.env.VITE_GOOGLE_AI_KEY;
-    console.log("¿Llave detectada?:", apiKey ? "SÍ ✅" : "NO ❌");
+    if (!input.trim() || !apiKey) return;
 
-    if (!input.trim()) return;
-
-    // 2. Actualizar interfaz con mensaje del usuario
     const userMsg = { role: 'user', text: input };
     setMessages(prev => [...prev, userMsg]);
     const currentInput = input;
     setInput('');
 
     try {
-      // 3. Configuración de la IA (Usando v1beta que es la más compatible en tu región)
       const genAI = new GoogleGenerativeAI(apiKey);
+      
+      // CAMBIO CLAVE: Usamos el alias 'latest' y dejamos que el SDK elija la versión de la API
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash" 
-      }, { apiVersion: "v1beta" }); 
+        model: "gemini-1.5-flash-latest" 
+      }); 
 
-      // 4. Petición a Google
       const result = await model.generateContent(currentInput);
       const response = await result.response;
-      const botText = response.text();
+      
+      setMessages(prev => [...prev, { role: 'bot', text: response.text() }]);
 
-      // 5. Mostrar respuesta del bot
-      setMessages(prev => [...prev, { role: 'bot', text: botText }]);
-
-    } catch (err) {
-      console.error("Error detallado de Google:", err);
+    } catch (err: any) {
+      console.error("Error detallado:", err);
+      // Si el error persiste, el bot te lo dirá de forma clara
       setMessages(prev => [...prev, { 
         role: 'bot', 
-        text: "Lo siento, Zei, todavía hay un problema de conexión. Revisa la consola (F12)." 
+        text: "Error de Google. Zei, intenta activar el VPN y refrescar." 
       }]);
     }
   };
@@ -56,7 +51,7 @@ const ChatAssistant: React.FC = () => {
             <span className="text-cyan-400 font-bold">Z-One Bot</span>
             <button onClick={() => setIsOpen(false)}><X className="w-4 h-4 text-slate-400" /></button>
           </div>
-          <div className="flex-1 p-4 overflow-y-auto space-y-2 text-sm scrollbar-hide">
+          <div className="flex-1 p-4 overflow-y-auto space-y-2 text-sm">
             {messages.map((m, i) => (
               <div key={i} className={`${m.role === 'user' ? 'text-right' : 'text-left'}`}>
                 <span className={`inline-block p-2 rounded-lg ${m.role === 'user' ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'}`}>
@@ -65,17 +60,9 @@ const ChatAssistant: React.FC = () => {
               </div>
             ))}
           </div>
-          <div className="p-2 border-t border-slate-800 flex gap-2 bg-slate-900">
-            <input 
-              value={input} 
-              onChange={(e) => setInput(e.target.value)} 
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()} 
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-white outline-none" 
-              placeholder="Pregúntame algo..." 
-            />
-            <button onClick={handleSend} className="p-2 bg-cyan-500 rounded-lg text-slate-900 hover:bg-cyan-400 transition-colors">
-              <Send className="w-4 h-4" />
-            </button>
+          <div className="p-2 border-t border-slate-800 flex gap-2">
+            <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-white outline-none" placeholder="Pregúntame algo..." />
+            <button onClick={handleSend} className="p-2 bg-cyan-500 rounded-lg text-slate-900"><Send className="w-4 h-4" /></button>
           </div>
         </div>
       )}
