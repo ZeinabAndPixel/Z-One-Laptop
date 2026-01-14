@@ -8,35 +8,40 @@ const ChatAssistant: React.FC = () => {
   const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
 
   const handleSend = async () => {
-    // ESTO ES PARA DEPURAR (DEBUG)
-const apiKey = import.meta.env.VITE_GOOGLE_AI_KEY;
-console.log("¿Qué llave ve el código?:", apiKey ? "Una llave que empieza por " + apiKey.substring(0, 5) : "NADA (está vacía ❌)");
+    // 1. Verificación de la Llave (Debug)
+    const apiKey = import.meta.env.VITE_GOOGLE_AI_KEY;
+    console.log("¿Llave detectada?:", apiKey ? "SÍ ✅" : "NO ❌");
+
     if (!input.trim()) return;
-    
+
+    // 2. Actualizar interfaz con mensaje del usuario
     const userMsg = { role: 'user', text: input };
-    setMessages([...messages, userMsg]);
-    console.log("¿Mi llave existe?", !!import.meta.env.VITE_GOOGLE_AI_KEY);
+    setMessages(prev => [...prev, userMsg]);
+    const currentInput = input;
     setInput('');
 
-    // Reemplaza tu bloque de 'try' por este más sencillo:
-try {
-  const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_AI_KEY);
-  
-  // Usamos el modelo más estándar y forzamos la versión estable 'v1'
-  const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash" 
-  }, { apiVersion: 'v1' }); 
+    try {
+      // 3. Configuración de la IA (Usando v1beta que es la más compatible en tu región)
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash" 
+      }, { apiVersion: "v1beta" }); 
 
-  // Quitamos la systemInstruction por ahora para probar si eso causa el error 400
-  const result = await model.generateContent(input);
-  const response = await result.response;
-  setMessages(prev => [...prev, { role: 'bot', text: response.text() }]);
+      // 4. Petición a Google
+      const result = await model.generateContent(currentInput);
+      const response = await result.response;
+      const botText = response.text();
 
-} catch (err) {
-  // Si falla, imprimimos el error real en la consola para saber el porqué
-  console.error("Error detallado de Google:", err);
-  setMessages(prev => [...prev, { role: 'bot', text: "Lo siento, hubo un error de conexión." }]);
-}
+      // 5. Mostrar respuesta del bot
+      setMessages(prev => [...prev, { role: 'bot', text: botText }]);
+
+    } catch (err) {
+      console.error("Error detallado de Google:", err);
+      setMessages(prev => [...prev, { 
+        role: 'bot', 
+        text: "Lo siento, Zei, todavía hay un problema de conexión. Revisa la consola (F12)." 
+      }]);
+    }
   };
 
   return (
@@ -51,7 +56,7 @@ try {
             <span className="text-cyan-400 font-bold">Z-One Bot</span>
             <button onClick={() => setIsOpen(false)}><X className="w-4 h-4 text-slate-400" /></button>
           </div>
-          <div className="flex-1 p-4 overflow-y-auto space-y-2 text-sm">
+          <div className="flex-1 p-4 overflow-y-auto space-y-2 text-sm scrollbar-hide">
             {messages.map((m, i) => (
               <div key={i} className={`${m.role === 'user' ? 'text-right' : 'text-left'}`}>
                 <span className={`inline-block p-2 rounded-lg ${m.role === 'user' ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'}`}>
@@ -60,9 +65,17 @@ try {
               </div>
             ))}
           </div>
-          <div className="p-2 border-t border-slate-800 flex gap-2">
-            <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-white outline-none" placeholder="Pregúntame algo..." />
-            <button onClick={handleSend} className="p-2 bg-cyan-500 rounded-lg text-slate-900"><Send className="w-4 h-4" /></button>
+          <div className="p-2 border-t border-slate-800 flex gap-2 bg-slate-900">
+            <input 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()} 
+              className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-white outline-none" 
+              placeholder="Pregúntame algo..." 
+            />
+            <button onClick={handleSend} className="p-2 bg-cyan-500 rounded-lg text-slate-900 hover:bg-cyan-400 transition-colors">
+              <Send className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}
