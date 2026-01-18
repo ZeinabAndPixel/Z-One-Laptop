@@ -81,7 +81,7 @@ const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddMultipleToCart }) =
         if (!categoryParam) throw new Error("Categoría no mapeada");
 
         // IMPORTANTE: Asegúrate de que esta URL coincida con tu endpoint local o de producción
-        const response = await fetch(`/api/products?categoria=${encodeURIComponent(categoryParam)}`);
+        const response = await fetch(`https://vscode.dev/github/ZeinabAndPixel/Z-One-Laptop-2/blob/main/api/products.ts`);
 
         if (!response.ok) {
           throw new Error(`Error del servidor: ${response.status}`);
