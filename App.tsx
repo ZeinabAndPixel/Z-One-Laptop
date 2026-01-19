@@ -55,18 +55,21 @@ useEffect(() => {
         // Mapeo seguro en caso de que la DB devuelva nombres de columna en snake_case
         // Si tu DB ya usa camelCase, esto no rompe nada.
         // Mapeo corregido para coincidir con tu SQL de Neon
-     
-const formattedData: Product[] = data.map((item: any) => ({
+     const formattedData: Product[] = data.map((item: any) => ({
   id: item.id,
-  name: item.nombre,           // Cambiado de item.name a item.nombre
-  category: item.categoria,    // Cambiado de item.category a item.categoria
-  brand: item.marca,           // Cambiado de item.brand a item.marca
-  price: Number(item.price || item.precio), // Verifica si en SQL pusiste 'precio'
-  rating: Number(item.rating || 4.5),      // Si no hay rating en DB, ponemos 4.5 por defecto
-  image: item.imagen_url,      // Cambiado de item.image a item.imagen_url
-  specs: Array.isArray(item.specs) ? item.specs : JSON.parse(item.specs || "[]")
+  name: item.nombre,           
+  category: item.categoria,    
+  brand: item.marca,           
+  price: Number(item.precio), // Usamos 'precio' directo de tu tabla
+  rating: 5,                  // Valor por defecto ya que la tabla no tiene rating
+  image: item.imagen_url,     
+  // AQUÍ ESTÁ LA MAGIA: Convertimos tu descripción de texto en una lista de specs
+  specs: item.descripcion 
+    ? item.descripcion.split(',').map((s: string) => s.trim()) 
+    : ["Especificación estándar"]
 }));
-        setProducts(formattedData);
+
+setProducts(formattedData);
       } catch (err) {
         console.error(err);
         setError("Error de conexión con el servidor. Intente más tarde.");

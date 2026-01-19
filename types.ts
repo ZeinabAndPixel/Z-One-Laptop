@@ -1,5 +1,6 @@
+
 export interface Product {
-  id: number;
+  id: string | number; // <--- Cambio importante: Aceptamos UUIDs
   name: string;
   category: string;
   brand: string;
