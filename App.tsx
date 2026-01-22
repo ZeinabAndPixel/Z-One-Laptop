@@ -14,6 +14,7 @@ import { SecurityModal, SecurityBanner } from './components/SecurityFeatures';
 import { getProducts, saveOrder } from './lib/db'; // Importamos la función de DB
 import { Product, CartItem } from './types';
 import { Zap, Monitor, MousePointer2, Filter, Search, MapPin, Phone, Mail, Loader2, Database } from 'lucide-react';
+import { CoverBanner, OfferBanner } from './components/PromoBanners';
 
 const App: React.FC = () => {
   // Estado de Datos
@@ -311,7 +312,14 @@ setProducts(formattedData);
       )}
       
       <main>
+
+{/* 1. AGREGA ESTO AQUÍ (Banner Superior) */}
+        <CoverBanner />
+
         <Hero onOpenBuilder={() => setIsBuilderOpen(true)} />
+
+          {/* 2. AGREGA ESTO AQUÍ (Publicidad antes del catálogo) */}
+        <OfferBanner />
         
         {/* CATALOG SECTION */}
         <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="catalog">
