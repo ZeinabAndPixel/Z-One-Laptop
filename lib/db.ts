@@ -1,16 +1,35 @@
-/// <reference types="vite/client" />
 import { Pool } from '@neondatabase/serverless';
 
-// Configuración de la conexión
-// Asegúrate de tener VITE_DATABASE_URL en tu archivo .env
+// --- CORRECCIÓN IMPORTANTE ---
+// Esta función busca la URL de la base de datos de forma segura
+// tanto si estás en el navegador (Vite) como si estás en el servidor (API)
+const getConnectionString = () => {
+  // Intenta obtenerla para Vite (Navegador)
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_DATABASE_URL) {
+    return import.meta.env.VITE_DATABASE_URL;
+  }
+  // Intenta obtenerla para Node.js (Servidor/API)
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env.VITE_DATABASE_URL || process.env.DATABASE_URL;
+  }
+  return undefined;
+};
+
+// Creamos la conexión con la URL detectada
 const pool = new Pool({
-  connectionString: process.env.VITE_DATABASE_URL,
+  connectionString: getConnectionString(),
 });
 
 // --- 1. OBTENER PRODUCTOS (Catálogo) ---
 // Solo trae productos que tengan stock disponible
 export const getProducts = async () => {
   try {
+    const connectionString = getConnectionString();
+    if (!connectionString) {
+      console.error("⛔ ERROR CRÍTICO: No se encontró la URL de la base de datos (VITE_DATABASE_URL). Revisa tu archivo .env");
+      return []; // Retorna array vacío para que no explote la app
+    }
+
     const { rows } = await pool.query('SELECT * FROM productos WHERE stock > 0');
     return rows;
   } catch (error) {
@@ -20,15 +39,13 @@ export const getProducts = async () => {
 };
 
 // --- 2. GUARDAR ORDEN Y RESTAR INVENTARIO (Checkout) ---
-// Usa una transacción para asegurar que se reste el stock al comprar
 export const saveOrder = async (orderData: any, cartItems: any[]) => {
-  const client = await pool.connect(); // Conectamos cliente para transacción
+  const client = await pool.connect(); 
 
   try {
-    await client.query('BEGIN'); // Iniciamos transacción
+    await client.query('BEGIN'); 
 
-    // A. Guardar la compra en la tabla 'compras'
-    // Guardamos los items como un string JSON para referencia
+    // A. Guardar la compra
     const insertOrderQuery = `
       INSERT INTO compras (
         cliente_nombre, 
@@ -56,7 +73,7 @@ export const saveOrder = async (orderData: any, cartItems: any[]) => {
     const res = await client.query(insertOrderQuery, values);
     const orderId = res.rows[0].id;
 
-    // B. Restar stock de cada producto comprado
+    // B. Restar stock
     for (const item of cartItems) {
       const updateStockQuery = `
         UPDATE productos 
@@ -66,15 +83,15 @@ export const saveOrder = async (orderData: any, cartItems: any[]) => {
       await client.query(updateStockQuery, [item.quantity, item.id]);
     }
 
-    await client.query('COMMIT'); // Confirmamos todos los cambios
+    await client.query('COMMIT'); 
     return orderId;
 
   } catch (error) {
-    await client.query('ROLLBACK'); // Si algo falla, deshacemos todo
+    await client.query('ROLLBACK'); 
     console.error('Error al procesar orden:', error);
     throw error;
   } finally {
-    client.release(); // Liberamos el cliente
+    client.release(); 
   }
 };
 

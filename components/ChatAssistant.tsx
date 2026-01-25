@@ -34,7 +34,7 @@ const ChatAssistant: React.FC = () => {
       // Si el error persiste, el bot te lo dirá de forma clara
       setMessages(prev => [...prev, { 
         role: 'bot', 
-        text: "Error de Google. Zei, intenta activar el VPN y refrescar." 
+        text: "Error de Google. intenta activar el VPN y refrescar." 
       }]);
     }
   };
