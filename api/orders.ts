@@ -1,24 +1,22 @@
 import { neon } from '@neondatabase/serverless';
 
 export default async function handler(req, res) {
-  const sql = neon(process.env.DATABASE_URL);
+  const sql = neon(process.env.DATABASE_URL || process.env.VITE_DATABASE_URL);
 
-  // GET: Obtener todas las órdenes (Solo para el Dashboard)
   if (req.method === 'GET') {
     try {
-      // Unimos tablas para ver quién compró qué
+      // Hacemos el SELECT mapeando tus columnas a lo que espera el Frontend
       const orders = await sql`
         SELECT 
-          compras.id, 
-          compras.total_pago, 
-          compras.metodo_pago, 
-          compras.estado,
-          compras.fecha,
-          usuarios.nombre_completo,
-          usuarios.cedula
+          id, 
+          total_pago, 
+          metodo_pago, 
+          estado,
+          fecha,
+          cliente_nombre as nombre_completo, 
+          cliente_cedula as cedula
         FROM compras
-        JOIN usuarios ON compras.cliente_id = usuarios.id
-        ORDER BY compras.fecha DESC
+        ORDER BY fecha DESC
       `;
       return res.status(200).json(orders);
     } catch (error) {
@@ -26,7 +24,6 @@ export default async function handler(req, res) {
     }
   }
 
-  // PATCH: Actualizar estado (Ej: de 'pendiente' a 'entregado')
   if (req.method === 'PATCH') {
     const { id, estado } = req.body;
     try {

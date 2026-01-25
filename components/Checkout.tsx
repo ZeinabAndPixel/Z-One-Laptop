@@ -1,22 +1,22 @@
-
-  import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, CheckCircle, Store, Smartphone, CreditCard, Loader2 } from 'lucide-react';
 import { saveOrder } from '../lib/db';
-import { CartItem } from '../types'; // Asegúrate de tener tus tipos importados
+import { CartItem } from '../types'; 
 
 interface CheckoutProps {
   cartItems: CartItem[];
   onClose: () => void;
   onClearCart: () => void;
-  onOrderComplete?: (data: any) => void; // Lo mantenemos opcional para no romper App.tsx
+  onOrderComplete?: (data: any) => void;
 }
 
 const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart }) => {
   const [step, setStep] = useState<'details' | 'confirmation'>('details');
   const [loading, setLoading] = useState(false);
-  const [orderId, setOrderId] = useState<number | string | null>(null);
   
-  // Estado del formulario (Solo datos de contacto)
+  // AHORA orderId ES STRING (porque tu base de datos usa UUIDs)
+  const [orderId, setOrderId] = useState<string | null>(null);
+  
   const [formData, setFormData] = useState({
     fullName: '',
     cedula: '',
@@ -28,23 +28,28 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart }) 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleSubmit = async () => {
-    if (!formData.fullName || !formData.cedula || !formData.phone) return;
+    // Validación básica
+    if (!formData.fullName || !formData.cedula || !formData.phone) {
+      alert("Por favor completa los campos obligatorios: Nombre, Cédula y Teléfono.");
+      return;
+    }
 
     setLoading(true);
     try {
-      // 1. Guardamos la orden y restamos inventario
+      // Llamamos a la función blindada de lib/db.ts
       const newOrderId = await saveOrder({
         ...formData,
         total: total
       }, cartItems);
       
-      // 2. Si todo sale bien, mostramos confirmación
+      // Guardamos el UUID recibido
       setOrderId(newOrderId);
       setStep('confirmation');
-      onClearCart(); // Limpiamos el carrito visualmente
-    } catch (error) {
+      onClearCart(); // Limpiamos el carrito visual
+    } catch (error: any) {
       console.error(error);
-      alert("Hubo un error al procesar el pedido. Intenta nuevamente.");
+      // Mostramos el error real que viene de la base de datos
+      alert(`Error al procesar el pedido: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -77,27 +82,27 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart }) 
             {/* Formulario de Datos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs text-slate-500 uppercase font-bold">Nombre Completo</label>
+                <label className="text-xs text-slate-500 uppercase font-bold">Nombre Completo <span className="text-red-500">*</span></label>
                 <input 
                   type="text"
-                  placeholder="Ej: Juan Pérez" 
+                  placeholder="Ej: Zeinab Muslumani" 
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:border-cyan-500 focus:outline-none transition-colors"
                   value={formData.fullName}
                   onChange={e => setFormData({...formData, fullName: e.target.value})}
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-slate-500 uppercase font-bold">Cédula de Identidad</label>
+                <label className="text-xs text-slate-500 uppercase font-bold">Cédula <span className="text-red-500">*</span></label>
                 <input 
                   type="text"
-                  placeholder="Ej: 28123456" 
+                  placeholder="Ej: 30123456" 
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:border-cyan-500 focus:outline-none transition-colors"
                   value={formData.cedula}
                   onChange={e => setFormData({...formData, cedula: e.target.value})}
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-slate-500 uppercase font-bold">Teléfono Celular</label>
+                <label className="text-xs text-slate-500 uppercase font-bold">Teléfono <span className="text-red-500">*</span></label>
                 <input 
                   type="tel"
                   placeholder="Ej: 0414-1234567" 
@@ -110,11 +115,12 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart }) 
                 <label className="text-xs text-slate-500 uppercase font-bold">Correo (Opcional)</label>
                 <input 
                   type="email"
-                  placeholder="Ej: juan@email.com" 
+                  placeholder="Ej: cliente@gmail.com" 
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:border-cyan-500 focus:outline-none transition-colors"
                   value={formData.email}
                   onChange={e => setFormData({...formData, email: e.target.value})}
                 />
+                <p className="text-[10px] text-slate-600">Si no tienes, usaremos uno temporal.</p>
               </div>
             </div>
 
@@ -178,17 +184,20 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart }) 
             
             <h2 className="text-3xl font-bold text-white mb-2">¡Pedido Reservado!</h2>
             <p className="text-slate-400 mb-8 max-w-md mx-auto">
-              Tu pedido ha sido registrado exitosamente en nuestro sistema.
+              Tu pedido ha sido registrado exitosamente.
             </p>
             
-            <div className="bg-slate-950 p-6 rounded-2xl max-w-xs mx-auto border border-dashed border-slate-700 mb-8 relative group">
+            <div className="bg-slate-950 p-6 rounded-2xl max-w-sm mx-auto border border-dashed border-slate-700 mb-8 relative group">
               <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-              <p className="text-slate-500 text-xs uppercase font-bold mb-2 tracking-widest">Tu Número de Orden</p>
-              <p className="text-5xl font-mono font-bold text-cyan-400 tracking-tighter">#{orderId}</p>
+              <p className="text-slate-500 text-xs uppercase font-bold mb-2 tracking-widest">Tu ID de Pedido</p>
+              {/* Ajuste de tamaño de fuente para que quepa el UUID */}
+              <p className="text-xl md:text-2xl font-mono font-bold text-cyan-400 break-all select-all">
+                {orderId}
+              </p>
             </div>
             
             <div className="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl text-sm text-blue-200 mb-8 max-w-md mx-auto">
-              📸 <strong>Tip:</strong> Toma una captura de pantalla de este número. Deberás presentarlo en caja para retirar tus productos.
+              📸 <strong>Importante:</strong> Guarda este código. Lo necesitarás para retirar tus productos en caja.
             </div>
 
             <button 
