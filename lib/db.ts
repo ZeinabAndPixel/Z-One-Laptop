@@ -39,13 +39,36 @@ export const getProducts = async () => {
 };
 
 // --- 2. GUARDAR ORDEN Y RESTAR INVENTARIO (Checkout) ---
+// ... imports y conexión ...
+
 export const saveOrder = async (orderData: any, cartItems: any[]) => {
-  const client = await pool.connect(); 
+  const client = await pool.connect();
 
   try {
-    await client.query('BEGIN'); 
+    await client.query('BEGIN'); // Iniciamos transacción
 
-    // A. Guardar la compra
+    // 1. GESTIÓN DEL CLIENTE (Insertar o Actualizar)
+    // Intentamos insertar al cliente. Si la cédula ya existe, no hacemos nada (ON CONFLICT DO NOTHING)
+    // Opcionalmente podrías actualizar el teléfono si cambió.
+    const insertClientQuery = `
+      INSERT INTO clientes (nombre_completo, cedula, telefono, email)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (cedula) DO UPDATE 
+      SET telefono = EXCLUDED.telefono, 
+          email = COALESCE(EXCLUDED.email, clientes.email)
+      RETURNING id
+    `;
+    
+    // Ejecutamos la consulta del cliente
+    await client.query(insertClientQuery, [
+      orderData.fullName,
+      orderData.cedula,
+      orderData.phone,
+      orderData.email || null // Email es opcional
+    ]);
+
+    // 2. GUARDAR LA COMPRA
+    // Nota: Ahora guardamos también la cédula en la compra para referencia rápida
     const insertOrderQuery = `
       INSERT INTO compras (
         cliente_nombre, 
@@ -61,19 +84,19 @@ export const saveOrder = async (orderData: any, cartItems: any[]) => {
       RETURNING id
     `;
     
-    const values = [
+    const orderValues = [
       orderData.fullName,
-      orderData.cedula,
+      orderData.cedula,     // <--- AQUÍ SE GUARDA LA CÉDULA EN LA COMPRA
       orderData.phone,
       orderData.total,
       orderData.paymentMethod,
       JSON.stringify(cartItems)
     ];
 
-    const res = await client.query(insertOrderQuery, values);
+    const res = await client.query(insertOrderQuery, orderValues);
     const orderId = res.rows[0].id;
 
-    // B. Restar stock
+    // 3. RESTAR STOCK
     for (const item of cartItems) {
       const updateStockQuery = `
         UPDATE productos 
@@ -83,36 +106,14 @@ export const saveOrder = async (orderData: any, cartItems: any[]) => {
       await client.query(updateStockQuery, [item.quantity, item.id]);
     }
 
-    await client.query('COMMIT'); 
+    await client.query('COMMIT');
     return orderId;
 
   } catch (error) {
-    await client.query('ROLLBACK'); 
+    await client.query('ROLLBACK');
     console.error('Error al procesar orden:', error);
     throw error;
   } finally {
-    client.release(); 
-  }
-};
-
-// --- 3. OBTENER ORDENES (Para el Cajero) ---
-export const getOrders = async () => {
-  try {
-    const { rows } = await pool.query('SELECT * FROM compras ORDER BY fecha DESC');
-    return rows;
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    throw error;
-  }
-};
-
-// --- 4. ACTUALIZAR ESTADO DE ORDEN (Para el Cajero) ---
-export const updateOrderStatus = async (id: number, status: string) => {
-  try {
-    await pool.query('UPDATE compras SET estado = $1 WHERE id = $2', [status, id]);
-    return true;
-  } catch (error) {
-    console.error('Error updating order:', error);
-    throw error;
+    client.release();
   }
 };
