@@ -228,6 +228,8 @@ const fetchProducts = async () => {
                     <option value="Componentes">Componentes</option>
                     <option value="Periféricos">Periféricos</option>
                     <option value="Monitores">Monitores</option>
+                    <option value="Computadoras">Computadoras</option>
+                    <option value="Telefonos">Telefonos</option>
                   </select>
                 </div>
                 <div>
