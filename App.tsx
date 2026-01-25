@@ -15,6 +15,7 @@ import { getProducts, saveOrder } from './lib/db'; // Importamos la función de 
 import { Product, CartItem } from './types';
 import { Zap, Monitor, MousePointer2, Filter, Search, MapPin, Phone, Mail, Loader2, Database } from 'lucide-react';
 import { CoverBanner, OfferBanner } from './components/PromoBanners';
+import CashierDashboard from './components/CashierDashboard';
 
 const App: React.FC = () => {
   // Estado de Datos
@@ -245,7 +246,7 @@ setProducts(formattedData);
           
           <div className="space-y-2">
             <h2 className="text-2xl font-bold text-white tracking-widest uppercase animate-pulse">
-              Conectando a Neon DB
+              Conectando...
             </h2>
             <p className="text-cyan-500/80 font-mono text-sm">
               Sincronizando catálogo de productos...
@@ -259,6 +260,27 @@ setProducts(formattedData);
   // ----------------------------------------------------------------------
   // MAIN APP
   // ----------------------------------------------------------------------
+
+
+// VERIFICACIÓN DE CAJERO
+if (user && user.rol === 'cajero') {
+  return (
+    <>
+      <Navbar 
+        // ... (props del navbar, asegúrate de pasar user y logout)
+        user={user}
+        onLogout={handleLogout}
+        // ... otros props dummy para que no falle
+        cartCount={0} onOpenCart={()=>{}} onSelectCategory={()=>{}} searchTerm="" onSearchSubmit={()=>{}} onOpenLogin={()=>{}}
+      />
+      <CashierDashboard />
+      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+    </>
+  );
+}
+
+// ... Aquí sigue tu return normal de la tienda 
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500 selection:text-slate-900">
       <SecurityBanner />
