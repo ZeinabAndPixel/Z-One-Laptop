@@ -9,7 +9,7 @@ import Checkout from './components/Checkout';
 import PCBuilder from './components/PCBuilder';
 import AuthModal from './components/AuthModal'; // Importar el nuevo componente
 import Toast from './components/Toast';
-import ChatAssistant from './components/ChatAssistant'; // <--- Añade esta línea
+
 import { SecurityModal, SecurityBanner } from './components/SecurityFeatures';
 import { getProducts, saveOrder } from './lib/db'; // Importamos la función de DB
 import { Product, CartItem } from './types';
@@ -538,9 +538,7 @@ if (user.rol === 'admin') {
         />
       )}
 
-      {/* 2. AQUÍ AGREGAMOS EL ASISTENTE INTELIGENTE */}
-      <ChatAssistant /> 
-
+  
       </footer> {/* Asegúrate de cerrar el main si lo abriste arriba */}
     </div> // Este cierra el div principal de la App
   );

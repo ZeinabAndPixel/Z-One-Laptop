@@ -1,3 +1,5 @@
+// components/PCBuilder.tsx
+
 import React, { useState, useEffect } from 'react';
 import { 
   X, Cpu, HardDrive, Zap, Box, Monitor, CheckCircle, 
@@ -6,9 +8,10 @@ import {
 import { getProducts } from '../lib/db';
 import { Product } from '../types';
 
+// CAMBIO 1: Actualizamos la interfaz para aceptar la función de múltiples productos
 interface PCBuilderProps {
   onClose: () => void;
-  onAddToCart: (product: Product) => void;
+  onAddMultipleToCart: (products: Product[]) => void;
 }
 
 const STEPS = [
@@ -20,28 +23,23 @@ const STEPS = [
   { id: 'psu_case', title: 'Fuente / Gabinete', icon: Zap, keywords: ['fuente', 'poder', 'psu', 'gabinete', 'case'] },
 ];
 
-const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddToCart }) => {
+// CAMBIO 2: Desestructuramos el nuevo nombre del prop (onAddMultipleToCart)
+const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddMultipleToCart }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [catalog, setCatalog] = useState<Product[]>([]);
   const [selections, setSelections] = useState<Record<string, Product | null>>({});
   const [loading, setLoading] = useState(true);
 
-  // --- CARGA Y LIMPIEZA DE DATOS ---
+  // ... (El useEffect de carga de datos se queda IGUAL) ...
   useEffect(() => {
     async function loadData() {
       try {
         const rawProducts = await getProducts();
-        
-        // Función para convertir datos "sucios" de DB a datos "limpios" de App
         const cleanCatalog = rawProducts.map((p: any) => {
-          // 1. Limpieza de Precio: Forzamos conversión a número
           let cleanPrice = 0;
           if (typeof p.precio === 'number') cleanPrice = p.precio;
           else if (typeof p.precio === 'string') cleanPrice = parseFloat(p.precio);
-          
           if (isNaN(cleanPrice)) cleanPrice = 0;
-
-          // 2. Limpieza de Imagen
           const cleanImage = p.imagen_url || p.image || 'https://via.placeholder.com/150';
 
           return {
@@ -49,15 +47,13 @@ const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddToCart }) => {
             name: p.nombre || 'Sin Nombre',
             category: (p.categoria || '').toLowerCase(),
             brand: p.marca || 'Genérico',
-            price: cleanPrice, // Ahora GARANTIZADO que es un número
+            price: cleanPrice,
             rating: 5,
             image: cleanImage,
             specs: p.descripcion ? p.descripcion.split(',') : [],
             stock: p.stock || 0
           } as Product;
         });
-
-        // Solo mostramos productos con stock
         setCatalog(cleanCatalog.filter(p => p.stock && p.stock > 0));
       } catch (error) {
         console.error("Error cargando builder:", error);
@@ -70,7 +66,6 @@ const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddToCart }) => {
 
   const currentStepData = STEPS[currentStep];
 
-  // Filtro de búsqueda
   const stepProducts = catalog.filter(p => {
     const searchString = (p.category + ' ' + p.name).toLowerCase();
     return currentStepData.keywords.some(keyword => searchString.includes(keyword));
@@ -83,22 +78,29 @@ const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddToCart }) => {
     }
   };
 
-  // --- CÁLCULO SEGURO DEL TOTAL ---
   const totalPrice = Object.values(selections).reduce((sum, item) => {
     if (!item || typeof item.price !== 'number') return sum;
     return sum + item.price;
   }, 0);
 
+  // CAMBIO 3: Reescribimos handleFinish para usar la función correcta
   const handleFinish = () => {
-    Object.values(selections).forEach(item => {
-      if (item) onAddToCart(item);
-    });
+    // Filtramos solo los pasos donde se seleccionó algo (quitamos los null)
+    const itemsToAdd = Object.values(selections).filter((item): item is Product => item !== null);
+    
+    if (itemsToAdd.length > 0) {
+      onAddMultipleToCart(itemsToAdd);
+    }
     onClose();
   };
 
+  // ... (El resto del return y JSX se queda IGUAL) ...
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950 flex flex-col font-sans text-white animate-fade-in">
-      {/* Header */}
+       {/* ... Aquí va todo el JSX del renderizado que ya tenías ... */}
+       {/* Solo asegúrate de copiar todo el contenido del return original */}
+       
+       {/* Header */}
       <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-3">
           <div className="bg-cyan-500/20 p-2 rounded-lg text-cyan-400"><Cpu className="w-6 h-6" /></div>
@@ -159,7 +161,6 @@ const PCBuilder: React.FC<PCBuilderProps> = ({ onClose, onAddToCart }) => {
                       <div className="p-4">
                         <h4 className="font-bold text-sm line-clamp-2 mb-2 min-h-[2.5rem]">{product.name}</h4>
                         <div className="flex justify-between items-center">
-                          {/* Seguridad Extrema con toFixed */}
                           <span className="text-lg font-bold text-cyan-400">${(product.price || 0).toFixed(2)}</span>
                           {isSelected && <span className="text-xs bg-cyan-500 text-black px-2 py-1 rounded font-bold">Elegido</span>}
                         </div>

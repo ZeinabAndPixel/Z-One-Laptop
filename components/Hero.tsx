@@ -11,7 +11,7 @@ const SLIDES = [
     badge: "NUEVA SERIE RTX 40 YA DISPONIBLE",
     title: <>Poder Sin <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Límites</span>.</>,
     subtitle: "Diseño Sin Rival.",
-    description: "Encuentra equipos de alto rendimiento diseñados para gaming competitivo y trabajo profesional. Garantía extendida y envíos a todo el país.",
+    description: "Encuentra equipos de alto rendimiento diseñados para gaming competitivo y trabajo profesional.",
     icon: <Zap className="w-5 h-5 text-cyan-400" />,
     bgGradient: "from-cyan-500/20 to-blue-600/20"
   },
