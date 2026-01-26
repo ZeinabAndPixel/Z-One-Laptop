@@ -30,7 +30,7 @@ interface OfferBannerProps {
 
 export const OfferBanner: React.FC<OfferBannerProps> = ({ onViewProduct }) => {
   // Aquí eliges el nombre EXACTO del producto de tu base de datos que quieres promocionar
-  const FEATURED_PRODUCT_NAME = "MacBook Pro M3"; 
+  const FEATURED_PRODUCT_NAME = "Lenovo V15"; 
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 mt-8">
@@ -67,7 +67,7 @@ export const OfferBanner: React.FC<OfferBannerProps> = ({ onViewProduct }) => {
           
           <div className="flex-1 w-full max-w-xs relative perspective-1000">
              <img 
-               src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=800" 
+               src="https://m.media-amazon.com/images/I/71Gxorija4L._AC_SX425_.jpg" 
                alt="Laptop Destacada" 
                className="relative z-10 w-full object-contain drop-shadow-2xl transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-[-2deg]"
              />

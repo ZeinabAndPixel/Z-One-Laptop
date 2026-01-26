@@ -64,7 +64,6 @@ export const SecurityModal: React.FC = () => {
             <Lock className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
             <ul className="list-disc pl-4 space-y-1 text-slate-400">
               <li>No ingrese datos personales reales.</li>
-              <li>Olis soy una prueba.</li>
               <li>No ingrese números de tarjetas de crédito reales.</li>
               <li>No se procesarán transacciones ni se realizarán envíos.</li>
             </ul>
