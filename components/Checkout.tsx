@@ -185,17 +185,21 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart, us
                 {/* Datos Bancarios */}
                 <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                   <h4 className="text-cyan-400 font-bold text-sm mb-3 flex items-center gap-2">
-                    <Copy className="w-4 h-4" /> Datos para el pago:
+                    <Copy className="w-4 h-4" /> Datos para el pago: 
                   </h4>
                   <div className="grid grid-cols-2 gap-y-2 text-sm">
                     <span className="text-slate-400">Banco:</span>
                     <span className="text-white font-mono font-bold">Banesco (0134)</span>
+
                     
                     <span className="text-slate-400">Teléfono:</span>
                     <span className="text-white font-mono font-bold">0414-1234567</span>
                     
-                    <span className="text-slate-400">Cédula:</span>
-                    <span className="text-white font-mono font-bold">V-12.345.678</span>
+                    <span className="text-slate-400">Numero de Cuenta:</span>
+                    <span className="text-white font-mono font-bold">0134856455225569</span>
+                    
+                    <span className="text-slate-400">RIF:</span>
+                    <span className="text-white font-mono font-bold">J-12.345.678</span>
                     
                     <span className="text-slate-400">Monto:</span>
                     <span className="text-green-400 font-mono font-bold">${total} USD (Tasa BCV)</span>

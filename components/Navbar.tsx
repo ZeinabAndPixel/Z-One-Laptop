@@ -10,6 +10,7 @@ interface NavbarProps {
   user: any; 
   onOpenLogin: () => void;
   onLogout: () => void;
+  onOpenOrders: () => void; // <--- Agrega esto
 }
 
 const Navbar: React.FC<NavbarProps> = ({ 
@@ -20,7 +21,8 @@ const Navbar: React.FC<NavbarProps> = ({
   onSearchSubmit,
   user,
   onOpenLogin,
-  onLogout
+  onLogout,
+  onOpenOrders
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -113,10 +115,17 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {/* Sección de Usuario */}
           {user ? (
-            <div className="hidden md:flex items-center gap-3 mr-2">
+            <div className="hidden md:flex items-center gap-4 mr-2">
               <div className="text-right">
                 <p className="text-sm font-bold text-white leading-none">{user.nombre_completo}</p>
-                <button onClick={onLogout} className="text-[10px] text-red-400 hover:underline">Cerrar Sesión</button>
+                <div className="flex gap-3 justify-end mt-1">
+                   {/* NUEVO BOTÓN MIS PEDIDOS */}
+                   <button onClick={onOpenOrders} className="text-[10px] text-cyan-400 hover:underline flex items-center gap-1">
+                      <ShoppingBag className="w-3 h-3" /> Mis Pedidos
+                   </button>
+                   <span className="text-slate-600 text-[10px]">|</span>
+                   <button onClick={onLogout} className="text-[10px] text-red-400 hover:underline">Cerrar Sesión</button>
+                </div>
               </div>
               <div className="w-8 h-8 bg-cyan-500/20 rounded-full flex items-center justify-center text-cyan-400 font-bold border border-cyan-500">
                 {user.nombre_completo.charAt(0).toUpperCase()}
@@ -182,12 +191,18 @@ const Navbar: React.FC<NavbarProps> = ({
           <button onClick={() => handleNavClick('Todos')} className="text-left text-cyan-400 font-bold">Ofertas</button>
           
           {/* Opción de Login/Logout en Móvil */}
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-slate-800 space-y-3">
             {user ? (
-              <div className="flex justify-between items-center">
-                <span className="text-slate-300">{user.nombre_completo}</span>
-                <button onClick={onLogout} className="text-red-400 text-sm">Salir</button>
-              </div>
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-300 font-bold">{user.nombre_completo}</span>
+                </div>
+                {/* Botón Móvil */}
+                <button onClick={() => { onOpenOrders(); setIsMobileMenuOpen(false); }} className="w-full text-left flex items-center gap-2 text-cyan-400 text-sm">
+                   <ShoppingBag className="w-4 h-4" /> Ver Mis Pedidos
+                </button>
+                <button onClick={onLogout} className="w-full text-left text-red-400 text-sm">Cerrar Sesión</button>
+              </>
             ) : (
               <button onClick={onOpenLogin} className="flex items-center gap-2 text-slate-300 hover:text-white">
                 <User className="w-4 h-4" /> Iniciar Sesión

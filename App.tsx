@@ -17,10 +17,12 @@ import { Zap, Monitor, MousePointer2, Filter, Search, MapPin, Phone, Mail, Loade
 import { CoverBanner, OfferBanner } from './components/PromoBanners';
 import CashierDashboard from './components/CashierDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import CustomerOrders from './components/CustomerOrders';
 
 const App: React.FC = () => {
   // Estado de Datos
     // Estado de Datos
+  const [isCustomerOrdersOpen, setIsCustomerOrdersOpen] = useState(false); // <--- NUEVO
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -342,7 +344,17 @@ if (user.rol === 'admin') {
           onLoginSuccess={handleLoginSuccess} 
         />
       )}
+
+{/* NUEVO: Modal de Mis Pedidos */}
+      {isCustomerOrdersOpen && user && (
+        <CustomerOrders 
+           userCedula={user.cedula} 
+           onClose={() => setIsCustomerOrdersOpen(false)} 
+        />
+      )}
+
       <Navbar 
+      onOpenOrders={() => setIsCustomerOrdersOpen(true)} // <--- NUEVA PROP QUE AGREGAREMOS AL NAVBAR
         cartCount={totalItemsInCart} 
         onOpenCart={() => setIsCartOpen(true)}
         onSelectCategory={handleNavCategorySelect}
@@ -527,13 +539,13 @@ if (user.rol === 'admin') {
             <h4 className="text-white font-bold text-lg">Contacto Directo</h4>
             <ul className="space-y-3 text-slate-500 text-sm">
               <li className="flex items-center gap-2 md:flex-row-reverse hover:text-cyan-400 transition-colors">
-                <Mail className="w-4 h-4" /> soporte@z-one.com
+                <Mail className="w-4 h-4" /> zeinabmuslumani@gmail.com
               </li>
               <li className="flex items-center gap-2 md:flex-row-reverse hover:text-cyan-400 transition-colors">
                 <Phone className="w-4 h-4" /> +58 (424) 824-4869
               </li>
               <li className="flex items-center gap-2 md:flex-row-reverse hover:text-cyan-400 transition-colors">
-                <MapPin className="w-4 h-4" /> Calle Bolivar, Venezuela
+                <MapPin className="w-4 h-4" /> Calle Ricaurte, Venezuela
               </li>
             </ul>
           </div>
