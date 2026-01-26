@@ -14,40 +14,36 @@ const getConnectionString = () => {
 const pool = new Pool({ connectionString: getConnectionString() });
 
 // --- GUARDAR ORDEN (Adaptado a TU esquema exacto) ---
+
+
 export const saveOrder = async (orderData: any, cartItems: any[]) => {
   const client = await pool.connect();
-
   try {
     await client.query('BEGIN');
 
-    // DATOS SEGUROS
-    // Tu tabla 'clientes' obliga a tener 'correo'. Si está vacío, generamos uno falso.
-    const emailSeguro = orderData.email || `${orderData.cedula}@cliente-tienda.com`;
-    // Tu tabla 'clientes' no tiene 'cedula', pero tiene 'id' de texto. Usaremos la Cédula como ID.
-    const clienteId = orderData.cedula; 
-
-    // PASO 1: GESTIONAR CLIENTE (Tabla: clientes)
-    // Buscamos por ID (que es la cédula)
+    // 1. FORZAR CÉDULA A STRING (Soluciona el error de tipos)
+    const cedulaString = String(orderData.cedula).trim(); 
+    
+    // 2. GESTIÓN INTELIGENTE DEL CLIENTE
+    // Verificamos si existe en la tabla clientes
     const checkQuery = 'SELECT id FROM clientes WHERE id = $1';
-    const checkRes = await client.query(checkQuery, [clienteId]);
+    const checkRes = await client.query(checkQuery, [cedulaString]);
 
     if (checkRes.rows.length > 0) {
-      // SI EXISTE: Actualizamos teléfono y correo (usando nombre de columna 'correo')
+      // Si existe, actualizamos datos de contacto para no tener celdas viejas/vacias
       await client.query(
-        'UPDATE clientes SET telefono = $1, correo = $2 WHERE id = $3',
-        [orderData.phone, emailSeguro, clienteId]
+        'UPDATE clientes SET telefono = $1, correo = $2, nombre_completo = $3 WHERE id = $4',
+            [orderData.phone, orderData.email, orderData.fullName, cedulaString]
       );
     } else {
-      // SI NO EXISTE: Insertamos (usando 'correo' y 'nombre_completo')
+      // Si no existe, lo creamos limpio
       await client.query(
         'INSERT INTO clientes (id, nombre_completo, correo, telefono) VALUES ($1, $2, $3, $4)',
-        [clienteId, orderData.fullName, emailSeguro, orderData.phone]
+        [cedulaString, orderData.fullName, orderData.email, orderData.phone]
       );
     }
 
-    // PASO 2: GUARDAR COMPRA (Tabla: compras)
-    // Usamos las columnas que SÍ existen en tu esquema: 
-    // cliente_nombre, cliente_cedula, cliente_telefono, total_pago, items
+    // 3. GUARDAR COMPRA (Usando la cédula string estandarizada)
     const insertOrderQuery = `
       INSERT INTO compras (
         cliente_nombre, 
@@ -62,6 +58,8 @@ export const saveOrder = async (orderData: any, cartItems: any[]) => {
       VALUES ($1, $2, $3, $4, $5, 'pendiente', $6, NOW())
       RETURNING id;
     `;
+    
+  
     
     const itemsJson = JSON.stringify(cartItems);
 
