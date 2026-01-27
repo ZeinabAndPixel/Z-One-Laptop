@@ -498,7 +498,7 @@ if (user.rol === 'admin') {
                 <Zap className="w-6 h-6" />
               </div>
               <h3 className="text-white font-bold mb-2">Envío Flash</h3>
-              <p className="text-sm text-slate-400">Recibe tu equipo en menos de 24 horas en zonas principales.</p>
+              <p className="text-sm text-slate-400">Recibe tu equipo en menos de 24 horas en zonas principales de El Tigre.</p>
             </div>
             <div className="p-6 group hover:bg-slate-800/50 rounded-2xl transition-colors duration-300">
               <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-cyan-400 border border-slate-700 group-hover:scale-110 transition-transform group-hover:border-cyan-500/50">
