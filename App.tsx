@@ -1,4 +1,4 @@
-
+import { Analytics } from "@vercel/analytics/next"
 import React, { useState, useEffect, useMemo } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
