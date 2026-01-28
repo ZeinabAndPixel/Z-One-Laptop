@@ -78,12 +78,12 @@ const formattedData: Product[] = data.map((item: any) => ({
   rating: 5,
   image: item.imagen_url,
   
-  // Mantenemos tu lógica actual de specs (usando la columna 'descripcion' original)
+  // Mantenemos  lógica actual de specs 
   specs: item.descripcion 
     ? item.descripcion.split(',').map((s: string) => s.trim()) 
     : ["Especificación estándar"],
 
-  // NUEVO: Mapeamos la columna 'detalles' a 'description'
+  //  Mapeamos la columna 'detalles' a 'description'
   // Si no tiene detalles, usamos la categoría como texto de relleno
   description: item.detalles || item.categoria 
 }));

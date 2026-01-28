@@ -3,6 +3,13 @@ import { X, CheckCircle, Store, Smartphone, CreditCard, Loader2, Upload, Copy } 
 import { saveOrder } from '../lib/db';
 import { CartItem } from '../types'; 
 
+// Checkout.tsx
+// Componente que gestiona el flujo de pago del cliente:
+// - Muestra formulario de datos del comprador
+// - Permite seleccionar método de pago y subir comprobante
+// - Llama a `saveOrder` (lib/db.ts) para persistir la orden
+// - Limpia el carrito y muestra confirmación
+
 interface CheckoutProps {
   cartItems: CartItem[];
   onClose: () => void;
@@ -51,6 +58,8 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart, us
     }
   };
 
+  // Enviar/confirmar pedido
+  // Valida campos, crea la orden vía `saveOrder` y maneja la UI (loading/confirmación)
   const handleSubmit = async () => {
     // 1. Validación General
     if (!formData.fullName || !formData.cedula || !formData.phone) {
@@ -68,11 +77,13 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, onClose, onClearCart, us
 
     setLoading(true);
     try {
+      // saveOrder espera (orderData, cartItems). En lib/db.ts se manejan transacciones.
       const newOrderId = await saveOrder({
         ...formData,
         total: total
       }, cartItems);
-      
+
+      // Mostrar confirmación y limpiar carrito
       setOrderId(newOrderId);
       setStep('confirmation');
       onClearCart();

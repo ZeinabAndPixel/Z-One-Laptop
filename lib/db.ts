@@ -1,3 +1,16 @@
+/**
+ * lib/db.ts
+ * Capa de acceso a la base de datos (Neon/Postgres) usada por los endpoints y
+ * componentes del frontend. Exporta funciones reutilizables:
+ *  - getProducts(): productos con stock > 0 (catálogo público)
+ *  - getAllProducts(): todos los productos (admin)
+ *  - saveOrder(orderData, cartItems): guarda pedidos, gestiona cliente y stock
+ *  - getOrders(), updateOrderStatus(): utilidades para cajero/administración
+ *
+ * Las funciones usan `Pool` de @neondatabase/serverless y manejan errores
+ * devolviendo arrays vacíos o lanzando cuando es crítico.
+ */
+
 import { Pool } from '@neondatabase/serverless';
 
 // 1. Configuración de conexión (Igual que antes)

@@ -1,4 +1,8 @@
 // components/PCBuilder.tsx
+// Componente multi-paso para construir y seleccionar una PC completa.
+// - Permite navegar por pasos (CPU, RAM, GPU, etc.), seleccionar productos
+// - Devuelve una lista de `Product` seleccionados mediante `onAddMultipleToCart`
+// - Usa `lib/db.ts` para cargar el catálogo y filtrar por keywords por paso
 
 import React, { useState, useEffect } from 'react';
 import { 

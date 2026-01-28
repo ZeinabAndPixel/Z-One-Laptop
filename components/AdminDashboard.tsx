@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Save, X, Search, Package } from 'lucide-react';
 import { Product } from '../types';
+// AdminDashboard.tsx
+// Panel para administrar el catálogo e inventario: listar, crear, editar y
+// eliminar productos. Usa endpoints (`/api/admin`) para persistencia y
+// muestra un modal para edición/creación.
 import { getAllProducts } from '../lib/db';
 
 // Definimos la interfaz extendida para incluir 'detalles' y 'stock' si no están en Product

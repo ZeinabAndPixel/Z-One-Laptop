@@ -16,6 +16,10 @@ import {
   X
 } from 'lucide-react';
 
+// CashierDashboard.tsx
+// Interfaz de cajero para revisar órdenes en tiempo real, confirmar pagos,
+// marcar entregas y cancelar pedidos con autorización. Consume `/api/orders`.
+
 interface Order {
   id: string;
   cliente_nombre: string;
