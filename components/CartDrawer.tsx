@@ -6,8 +6,8 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (id: number, delta: number) => void;
-  onRemoveItem: (id: number) => void;
+  onUpdateQuantity: (id: string | number, delta: number) => void;
+  onRemoveItem: (id: string | number) => void;
   onCheckout: () => void;
 }
 

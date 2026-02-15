@@ -7,6 +7,8 @@ interface FilterSidebarProps {
   activeBrand: string;
   onSelectCategory: (category: string) => void;
   onSelectBrand: (brand: string) => void;
+  availableCategories?: string[];
+  availableBrands?: string[];
   className?: string;
 }
 
@@ -15,6 +17,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   activeBrand,
   onSelectCategory,
   onSelectBrand,
+  availableCategories,
+  availableBrands,
   className = ''
 }) => {
   return (
@@ -41,7 +45,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <div className="mb-8">
         <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Categorías</h4>
         <div className="space-y-3">
-          {CATEGORIES.map((cat) => (
+          {(availableCategories || CATEGORIES).map((cat) => (
             <label key={cat} className="flex items-center gap-3 cursor-pointer group select-none">
               <input
                 type="radio"
@@ -65,7 +69,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <div>
         <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Marcas</h4>
         <div className="space-y-3">
-          {BRANDS.map((brand) => (
+          {(availableBrands || BRANDS).map((brand) => (
             <label key={brand} className="flex items-center gap-3 cursor-pointer group select-none">
                <input
                 type="radio"

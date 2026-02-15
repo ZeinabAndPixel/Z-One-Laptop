@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/next"
 import React, { useState, useEffect, useMemo } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -194,7 +193,7 @@ setProducts(formattedData);
     setIsCartOpen(true);
   };
 
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (id: string | number, delta: number) => {
     setCart(prevCart => {
       return prevCart.map(item => {
         if (item.id === id) {
@@ -206,7 +205,7 @@ setProducts(formattedData);
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: string | number) => {
     setCart(prevCart => prevCart.filter(item => item.id !== id));
   };
   // handlePurchaseComplete: se llama desde `Checkout` cuando el usuario confirma.
@@ -216,8 +215,8 @@ setProducts(formattedData);
       // Calculamos el total del carrito
       const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       
-      // Llamamos a la función de la base de datos
-      await saveOrder(customerData, total);
+      // Llamamos a la función de la base de datos (pasamos los items del carrito)
+      await saveOrder(customerData, cart);
       
       // Si todo sale bien, limpiamos y cerramos
       clearCart();
@@ -320,6 +319,7 @@ if (user && user.rol === 'cajero') {
         // ... (props del navbar, asegúrate de pasar user y logout)
         user={user}
         onLogout={handleLogout}
+        onOpenOrders={() => setIsCustomerOrdersOpen(true)}
         // ... otros props dummy para que no falle
         cartCount={0} onOpenCart={()=>{}} onSelectCategory={()=>{}} searchTerm="" onSearchSubmit={()=>{}} onOpenLogin={()=>{}}
       />
@@ -333,6 +333,7 @@ if (user.rol === 'admin') {
       <>
         <Navbar 
           user={user} onLogout={handleLogout} 
+          onOpenOrders={() => setIsCustomerOrdersOpen(true)}
           cartCount={0} onOpenCart={()=>{}} onSelectCategory={()=>{}} searchTerm="" onSearchSubmit={()=>{}} onOpenLogin={()=>{}}
         />
         <AdminDashboard />
