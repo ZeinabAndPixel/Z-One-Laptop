@@ -51,12 +51,28 @@ const fetchProducts = async () => {
 
   useEffect(() => {
     fetchProducts();
-    const savedRate = localStorage.getItem('bcvRate');
-    if (savedRate) {
-      setBcvRate(Number(savedRate));
-    } else {
-      setBcvRate(36.5); // Default rate
-    }
+    (async () => {
+      try {
+        const resp = await fetch('/api/admin?type=bcv');
+        if (resp.ok) {
+          const json = await resp.json();
+          const data = json.data;
+          if (data && typeof data.rate !== 'undefined') {
+            setBcvRate(Number(data.rate));
+            localStorage.setItem('bcvRate', String(data.rate));
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching BCV rate:', err);
+      }
+      const savedRate = localStorage.getItem('bcvRate');
+      if (savedRate) {
+        setBcvRate(Number(savedRate));
+      } else {
+        setBcvRate(36.5); // Default rate
+      }
+    })();
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -94,8 +110,25 @@ const fetchProducts = async () => {
   };
 
   const handleSaveBCVRate = () => {
-    localStorage.setItem('bcvRate', bcvRate.toString());
-    alert('Tasa BCV guardada correctamente');
+    (async () => {
+      try {
+        const resp = await fetch('/api/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'set_bcv', rate: bcvRate, set_by: 'admin' })
+        });
+        if (resp.ok) {
+          localStorage.setItem('bcvRate', bcvRate.toString());
+          alert('Tasa BCV guardada correctamente');
+        } else {
+          console.error(await resp.text());
+          alert('Error al guardar tasa BCV');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error al guardar tasa BCV');
+      }
+    })();
   };
 
   const handleDelete = async (id: string | number) => {
