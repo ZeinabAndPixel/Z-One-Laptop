@@ -51,12 +51,30 @@ const fetchProducts = async () => {
 
   useEffect(() => {
     fetchProducts();
-    const savedRate = localStorage.getItem('bcvRate');
-    if (savedRate) {
-      setBcvRate(Number(savedRate));
-    } else {
-      setBcvRate(36.5); // Default rate
-    }
+    // Obtener tasa BCV desde API (Neon)
+    (async () => {
+      try {
+        const resp = await fetch('/api/admin?type=bcv');
+        if (resp.ok) {
+          const json = await resp.json();
+          const data = json.data;
+          if (data && typeof data.rate !== 'undefined') {
+            setBcvRate(Number(data.rate));
+            localStorage.setItem('bcvRate', String(data.rate));
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching BCV rate:', err);
+      }
+      // Fallback
+      const savedRate = localStorage.getItem('bcvRate');
+      if (savedRate) {
+        setBcvRate(Number(savedRate));
+      } else {
+        setBcvRate(36.5); // Default rate
+      }
+    })();
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -94,8 +112,27 @@ const fetchProducts = async () => {
   };
 
   const handleSaveBCVRate = () => {
-    localStorage.setItem('bcvRate', bcvRate.toString());
-    alert('Tasa BCV guardada correctamente');
+    // Enviar al backend para persistir en Neon
+    (async () => {
+      try {
+        const resp = await fetch('/api/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'set_bcv', rate: bcvRate, set_by: 'admin' })
+        });
+        if (resp.ok) {
+          localStorage.setItem('bcvRate', bcvRate.toString());
+          alert('Tasa BCV guardada correctamente');
+        } else {
+          const err = await resp.json().catch(() => ({}));
+          console.error('Error guardando BCV:', err);
+          alert('Error al guardar tasa BCV');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error al guardar tasa BCV');
+      }
+    })();
   };
 
   const handleDelete = async (id: string | number) => {

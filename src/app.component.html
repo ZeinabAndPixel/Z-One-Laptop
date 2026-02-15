@@ -1,0 +1,523 @@
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 w-full z-40 bg-gothic-bg/80 backdrop-blur-lg border-b border-gothic-text/5 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <div class="font-display font-bold text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-gothic-accent to-pink-500 tracking-wider hover:scale-105 transition-transform cursor-pointer drop-shadow-sm">
+      PORTFOLIO
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <div class="hidden md:flex space-x-8 font-body">
+        <button (click)="scrollToSection('home')" class="text-gothic-text/70 hover:text-gothic-accent transition-colors text-sm font-semibold tracking-wide uppercase hover:underline decoration-gothic-accent underline-offset-8 decoration-2">{{ currentLang() === 'es' ? 'Inicio' : 'Home' }}</button>
+        <button (click)="scrollToSection('profile')" class="text-gothic-text/70 hover:text-gothic-accent transition-colors text-sm font-semibold tracking-wide uppercase hover:underline decoration-gothic-accent underline-offset-8 decoration-2">{{ currentLang() === 'es' ? 'Perfil' : 'Profile' }}</button>
+        <button (click)="scrollToSection('projects')" class="text-gothic-text/70 hover:text-gothic-accent transition-colors text-sm font-semibold tracking-wide uppercase hover:underline decoration-gothic-accent underline-offset-8 decoration-2">{{ currentLang() === 'es' ? 'Proyectos' : 'Projects' }}</button>
+      </div>
+
+      <!-- Language Toggle -->
+      <button (click)="toggleLanguage()" class="relative group p-2 rounded-full hover:bg-gothic-text/5 transition-all text-xl border border-transparent hover:border-gothic-text/10" [title]="currentLang() === 'es' ? 'Switch to English' : 'Cambiar a Español'">
+        {{ currentLang() === 'es' ? '🇺🇸' : '🇪🇸' }}
+        <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-gothic-text text-gothic-bg px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            {{ currentLang() === 'es' ? 'English' : 'Español' }}
+        </span>
+      </button>
+
+      <!-- Theme Toggle Button -->
+      <button (click)="toggleTheme()" class="p-2 rounded-full hover:bg-gothic-text/5 text-gothic-accent transition-all border border-transparent hover:border-gothic-accent/30">
+        @if (isDarkMode()) {
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        }
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="min-h-screen pt-24 flex flex-col md:flex-row items-center justify-center max-w-7xl mx-auto px-6 gap-16 relative overflow-visible font-body">
+  <!-- Dynamic Background Elements -->
+  <div class="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+  <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-r from-blue-600/10 to-teal-500/10 rounded-full blur-[100px] -z-10"></div>
+
+  <!-- Text Content -->
+  <div class="flex-1 space-y-8 text-center md:text-left fade-in-up z-10">
+    <h2 class="text-gothic-accent font-body text-xl md:text-2xl tracking-[0.3em] uppercase font-light drop-shadow-md">
+      {{ currentLang() === 'es' ? 'Bienvenido a mi mundo' : 'Welcome to my world' }}
+    </h2>
+    <h1 class="text-6xl md:text-8xl font-bold font-display text-gothic-text leading-[0.9] drop-shadow-lg transition-colors duration-300">
+      {{ currentLang() === 'es' ? 'HOLA, SOY' : 'HELLO, I´M' }} <br>
+      <span class="text-gradient font-black relative inline-block">
+        {{ viewData().personal.name }}
+        <!-- Underline decoration -->
+        <svg class="absolute w-full h-3 -bottom-1 left-0 text-gothic-accent opacity-70" viewBox="0 0 100 10" preserveAspectRatio="none">
+           <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none" />
+        </svg>
+      </span>
+    </h1>
+    <p class="text-xl md:text-2xl text-gothic-text/80 max-w-xl mx-auto md:mx-0 font-light leading-relaxed transition-colors duration-300">
+      {{ viewData().personal.title }}
+    </p>
+    <div class="flex items-center justify-center md:justify-start gap-4 text-sm font-mono text-gothic-text/60">
+        <span class="bg-gothic-text/5 px-3 py-1 rounded-full border border-gothic-text/10">GPA: {{ viewData().personal.gpa }}</span>
+        <span class="bg-gothic-text/5 px-3 py-1 rounded-full border border-gothic-text/10">{{ viewData().personal.location }}</span>
+    </div>
+    
+    <div class="flex flex-wrap gap-6 justify-center md:justify-start pt-6">
+      <button (click)="scrollToSection('projects')" class="group relative px-8 py-4 bg-transparent text-white font-bold rounded-full overflow-hidden border border-gothic-accent/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:border-gothic-accent">
+        <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-gothic-accent to-pink-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <span class="relative z-10 tracking-widest uppercase text-sm">{{ currentLang() === 'es' ? 'Ver Proyectos' : 'View Projects' }}</span>
+      </button>
+      
+      <button (click)="generateCV()" class="group px-8 py-4 bg-gothic-text/5 backdrop-blur-sm border border-gothic-text/10 text-gothic-text font-bold rounded-full hover:bg-gothic-text/10 hover:border-gothic-text/30 transition-all flex items-center gap-3">
+        <span class="tracking-widest uppercase text-sm">{{ currentLang() === 'es' ? 'Descargar CV' : 'Download CV' }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-y-1 transition-transform"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Image Content - THE BLOB IS BACK -->
+  <div class="flex-1 flex justify-center relative fade-in-up delay-200 z-10">
+    <div class="relative w-72 h-72 md:w-96 md:h-96 group">
+      
+      <!-- Animated Background Blob with Color -->
+      <div class="absolute inset-0 bg-gradient-to-br from-gothic-accent via-pink-500 to-blue-500 animate-morph blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-700"></div>
+      
+      <!-- The Image Blob Container -->
+      <div class="absolute inset-2 bg-gothic-bg animate-morph z-10 overflow-hidden border-2 border-gothic-text/10 shadow-2xl">
+        @if (isLoading()) {
+           <div class="w-full h-full flex items-center justify-center bg-gothic-text/5">
+             <div class="w-12 h-12 border-4 border-gothic-accent border-t-transparent rounded-full animate-spin"></div>
+           </div>
+        } @else {
+           <img [src]="viewData().personal.photoUrl" (error)="handleImageError($event)" alt="Profile Photo" class="w-full h-full object-cover transition-transform duration-700 grayscale hover:grayscale-0 group-hover:scale-110">
+        }
+        <!-- Glass Shine -->
+        <div class="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-50 pointer-events-none"></div>
+      </div>
+      
+      <!-- Floating Badges -->
+      <div class="absolute top-0 right-0 bg-gothic-bg/80 backdrop-blur-md border border-gothic-accent/30 p-4 rounded-full shadow-xl z-20 animate-float">
+        <span class="text-3xl">🚀</span>
+      </div>
+      <div class="absolute bottom-4 left-0 bg-gothic-bg/80 backdrop-blur-md border border-pink-500/30 p-4 rounded-full shadow-xl z-20 animate-float" style="animation-delay: 1s;">
+        <span class="text-3xl">💻</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Profile Section (Glassmorphism + Light Mode Fixes) -->
+<section id="profile" class="py-32 relative">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row gap-20 items-center">
+      
+      <!-- Info Card with Glass Effect -->
+      <div class="w-full md:w-5/12 relative group">
+        <div class="absolute -inset-1 bg-gradient-to-r from-gothic-accent to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+        <div class="relative bg-white/5 dark:bg-white/5 bg-gothic-secondary/50 backdrop-blur-xl p-8 rounded-2xl border border-gothic-text/10 shadow-2xl">
+          <h3 class="font-display text-3xl text-gothic-text mb-8 border-b border-gothic-text/10 pb-4 flex items-center gap-3">
+            <span class="text-gothic-accent">✦</span>
+            {{ currentLang() === 'es' ? 'Perfil Profesional' : 'Professional Profile' }}
+          </h3>
+          <ul class="space-y-6 font-body text-gothic-text/80 text-lg">
+            <li class="flex flex-col">
+              <span class="text-xs font-bold text-gothic-accent uppercase tracking-widest mb-1">{{ currentLang() === 'es' ? 'Nacionalidad' : 'Nationality' }}</span>
+              <span class="text-gothic-text font-display text-xl">{{ viewData().personal.nationality }}</span>
+            </li>
+            
+            <!-- Dynamic Education List -->
+            <li class="flex flex-col">
+              <span class="text-xs font-bold text-gothic-accent uppercase tracking-widest mb-2">{{ currentLang() === 'es' ? 'Educación' : 'Education' }}</span>
+              @for (edu of viewData().education; track edu.institution) {
+                  <div class="mb-3 border-l-2 border-gothic-accent/30 pl-3">
+                     <span class="block text-gothic-text font-semibold leading-tight">{{ edu.degree }}</span>
+                     <span class="text-sm text-gothic-text/60">{{ edu.institution }} • {{ edu.year }}</span>
+                  </div>
+              }
+            </li>
+
+            <li class="flex flex-col">
+              <span class="text-xs font-bold text-gothic-accent uppercase tracking-widest mb-1">{{ currentLang() === 'es' ? 'Enfoque' : 'Focus' }}</span>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-gothic-accent to-pink-500 font-bold">{{ viewData().personal.focus }}</span>
+            </li>
+            <li class="flex flex-col">
+              <span class="text-xs font-bold text-gothic-accent uppercase tracking-widest mb-1">{{ currentLang() === 'es' ? 'Idiomas' : 'Languages' }}</span>
+              <span class="text-gothic-text">{{ viewData().personal.languages }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bio & Socials -->
+      <div class="w-full md:w-7/12 space-y-10 font-body">
+        <h2 class="text-5xl md:text-6xl font-display font-bold text-gothic-text leading-tight">
+          {{ currentLang() === 'es' ? 'Sobre Mí' : 'About Me' }}
+          <span class="text-gothic-accent">.</span>
+        </h2>
+        <p class="text-gothic-text/70 leading-loose text-lg font-light border-l-2 border-gothic-text/10 pl-6">
+          {{ viewData().personal.bio }}
+        </p>
+        
+        <!-- Social Icons (Restored Beautiful Style) -->
+        <div>
+          <h3 class="text-sm font-bold text-gothic-text uppercase tracking-widest mb-6">{{ currentLang() === 'es' ? 'Redes Sociales' : 'Social Media' }}</h3>
+          <div class="flex flex-wrap gap-4">
+             @for (social of socials; track social.name) {
+               <a [href]="social.url" target="_blank" class="group relative w-14 h-14 flex items-center justify-center bg-gothic-text/5 rounded-full border border-gothic-text/10 hover:border-gothic-accent/50 hover:bg-gothic-text/10 transition-all duration-300 overflow-hidden">
+                  <div class="absolute inset-0 bg-gradient-to-tr from-gothic-accent/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <!-- Icons -->
+                   @if (social.icon === 'github') { <svg class="w-6 h-6 text-gothic-text/70 group-hover:text-gothic-text group-hover:scale-110 transition-transform relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg> }
+                   @else if (social.icon === 'linkedin') { <svg class="w-6 h-6 text-gothic-text/70 group-hover:text-gothic-text group-hover:scale-110 transition-transform relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> }
+                   @else if (social.icon === 'instagram') { <svg class="w-6 h-6 text-gothic-text/70 group-hover:text-gothic-text group-hover:scale-110 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> }
+                   @else if (social.icon === 'whatsapp') { <svg class="w-6 h-6 text-gothic-text/70 group-hover:text-gothic-text group-hover:scale-110 transition-transform relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg> }
+                   @else if (social.icon === 'telegram') { <svg class="w-6 h-6 text-gothic-text/70 group-hover:text-gothic-text group-hover:scale-110 transition-transform relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.065-1.226-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> }
+               </a>
+             }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section id="experience" class="py-24 max-w-6xl mx-auto px-6 font-body">
+   <div class="flex items-center mb-16">
+    <div class="h-1 bg-gradient-to-r from-gothic-accent to-transparent w-24 mr-6"></div>
+    <h2 class="text-4xl md:text-5xl font-display font-bold text-gothic-text tracking-tight">{{ currentLang() === 'es' ? 'Experiencia' : 'Experience' }}</h2>
+  </div>
+
+  <div class="space-y-12">
+    @if (viewData().experience && viewData().experience.length > 0) {
+      @for (exp of viewData().experience; track exp.company) {
+        <div class="group relative pl-8 border-l-2 border-gothic-text/10 hover:border-gothic-accent transition-colors duration-500">
+          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gothic-bg border-4 border-gothic-accent shadow-[0_0_15px_rgba(168,85,247,0.5)] group-hover:scale-125 transition-transform"></div>
+          
+          <div class="bg-gothic-text/5 p-8 rounded-2xl hover:bg-gothic-text/10 transition-all duration-300 border border-gothic-text/5 hover:border-gothic-text/10 shadow-lg hover:shadow-2xl">
+             <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                <h3 class="text-2xl font-bold text-gothic-text group-hover:text-gothic-accent transition-colors">{{ exp.role }}</h3>
+                <span class="text-sm font-semibold text-gothic-accent bg-gothic-accent/10 px-4 py-1 rounded-full border border-gothic-accent/20 mt-2 md:mt-0 w-fit">
+                  {{ exp.duration }}
+                </span>
+             </div>
+             <!-- Updated styling for Company Name (e.g., Freelance) -->
+             <h4 class="text-lg font-bold text-gothic-text/90 mb-4 font-body tracking-widest uppercase">{{ exp.company }}</h4>
+             <p class="text-gothic-text/80 leading-relaxed">{{ exp.description }}</p>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="pl-8 text-gothic-text/50 animate-pulse">Loading experience data...</div>
+    }
+  </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="py-24 px-6 max-w-7xl mx-auto font-body">
+  <div class="flex items-center mb-20 justify-end">
+    <h2 class="text-4xl md:text-5xl font-display font-bold text-gothic-text text-right">{{ currentLang() === 'es' ? 'Proyectos' : 'Projects' }}</h2>
+    <div class="h-1 bg-gradient-to-l from-pink-500 to-transparent w-24 ml-6"></div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-20 text-gothic-text/50 animate-pulse">Loading...</div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      @for (project of viewData().projects; track project.title) {
+        <div class="group relative bg-gothic-bg rounded-2xl overflow-hidden border border-gothic-text/10 shadow-xl hover:shadow-2xl hover:shadow-gothic-accent/10 transition-all duration-500 flex flex-col h-full transform hover:-translate-y-2">
+          @if (project.link) {
+            <a [href]="project.link" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-20 cursor-pointer"></a>
+          }
+          <!-- Image -->
+          <div class="h-56 overflow-hidden relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-gothic-bg via-transparent to-transparent z-10 opacity-80"></div>
+            <img [src]="project.image" [alt]="project.title" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+          </div>
+          
+          <!-- Content -->
+          <div class="p-8 flex flex-col flex-grow relative z-10 -mt-16">
+            <div class="bg-gothic-bg/90 backdrop-blur-md p-4 rounded-xl border border-gothic-text/10 shadow-lg mb-4 group-hover:border-gothic-accent/30 transition-colors">
+               <h3 class="text-xl font-bold text-gothic-text flex items-center justify-between">
+                {{ project.title }}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gothic-accent opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </h3>
+            </div>
+            <p class="text-gothic-text/70 text-sm mb-6 line-clamp-3 leading-relaxed flex-grow">{{ project.description }}</p>
+            <div class="flex flex-wrap gap-2 mt-auto">
+              @for (tag of project.tags; track tag) {
+                <span class="text-xs font-bold px-3 py-1 rounded-full bg-gothic-text/5 text-gothic-text/80 border border-gothic-text/10">
+                  {{ tag }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>
+
+<!-- Skills & Software -->
+<section id="skills" class="py-24 bg-gradient-to-t from-black/20 to-transparent relative font-body">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-20">
+      <h2 class="text-4xl md:text-5xl font-display font-bold text-gothic-text mb-6">{{ currentLang() === 'es' ? 'Arsenal Técnico' : 'Technical Arsenal' }}</h2>
+      <div class="w-20 h-1 bg-gothic-accent mx-auto rounded-full opacity-50"></div>
+    </div>
+    
+    <div class="flex flex-wrap justify-center gap-8 md:gap-16 mb-24">
+      @for (skill of viewData().skills; track skill.name) {
+        <div class="flex flex-col items-center group">
+          <div class="w-24 h-24 rounded-3xl bg-gothic-text/5 border border-gothic-text/10 flex items-center justify-center mb-4 group-hover:bg-gothic-text/10 group-hover:border-gothic-accent/50 group-hover:scale-110 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] bg-white/50 dark:bg-transparent">
+            @if (isUrl(skill.icon)) { 
+                <img [src]="skill.icon" class="w-12 h-12 object-contain filter drop-shadow-lg"> 
+            } @else {
+                <!-- SVG Fallbacks -->
+                @if(skill.name.includes('React')){ <svg viewBox="-10.5 -9.45 21 18.9" class="w-12 h-12 fill-[#61DAFB] group-hover:animate-spin-slow"><circle r="2" fill="#61DAFB"></circle><g stroke="#61DAFB" stroke-width="1" fill="none"><ellipse rx="10" ry="4.5"></ellipse><ellipse rx="10" ry="4.5" transform="rotate(60)"></ellipse><ellipse rx="10" ry="4.5" transform="rotate(120)"></ellipse></g></svg> }
+                @else if(skill.name.includes('SQL')){ <svg class="w-12 h-12 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 9l18-6M3 15l18 6" /></svg> } 
+                @else { <span class="text-2xl font-bold text-gray-500">?</span> }
+            }
+          </div>
+          <span class="text-gothic-text/80 font-medium tracking-wide group-hover:text-gothic-accent transition-colors">{{ skill.name }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Software -->
+    <h3 class="text-xl font-bold text-center text-gothic-text/60 mb-10 uppercase tracking-[0.2em]">{{ currentLang() === 'es' ? 'Herramientas' : 'Tools' }}</h3>
+    <div class="flex flex-wrap justify-center gap-6">
+        @for (soft of viewData().softwares; track soft.name) {
+          <div class="bg-gothic-text/5 px-6 py-3 rounded-xl border border-gothic-text/5 flex items-center gap-3 hover:bg-gothic-text/10 transition-colors hover:border-gothic-text/20">
+            @if (soft.imageUrl) { <img [src]="soft.imageUrl" class="w-6 h-6 object-contain opacity-80"> }
+            <span class="text-gothic-text/80 font-semibold">{{ soft.name }}</span>
+          </div>
+        }
+    </div>
+  </div>
+</section>
+
+<!-- Connect / QR Section (Separated from Footer) -->
+<section class="py-24 mt-12 bg-gothic-accent/5 border-y border-gothic-text/5">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="text-3xl font-display font-bold text-gothic-text mb-12">{{ currentLang() === 'es' ? 'Conectemos' : 'Lets Connect' }}</h2>
+    <div class="flex justify-center gap-10 flex-wrap">
+       @for (qr of viewData().qrCodes; track qr.platform) {
+          <div class="bg-white p-4 rounded-lg shadow-xl hover:-translate-y-1 transition-transform duration-300 group">
+             <div class="w-40 h-40 overflow-hidden mb-3">
+               <img [src]="qr.imageUrl" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="QR">
+             </div>
+             <a [href]="qr.link" target="_blank" class="block w-full py-2 bg-gothic-accent text-white text-xs font-bold uppercase rounded hover:bg-gray-900 transition-colors tracking-widest">
+               {{ qr.platform }}
+             </a>
+          </div>
+       }
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-black py-12 border-t border-white/10 font-body relative overflow-hidden mt-12">
+  <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-gothic-accent to-transparent opacity-50"></div>
+  
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+    <div (dblclick)="triggerAdminAuth()" class="text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-gothic-accent to-pink-500 cursor-default select-none hover:opacity-80 transition-opacity">
+      {{ viewData().personal.name.toUpperCase() }}
+    </div>
+    
+    <div class="text-gray-500 text-sm flex flex-col items-end gap-1 text-center md:text-right">
+      <span>&copy; {{ currentYear }} • Made with <span class="text-pink-500">♥</span> using Angular & Supabase</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ADMIN PANEL & LOGIN -->
+@if (showLoginModal()) {
+  <div class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md">
+    <div class="bg-gray-900 p-8 rounded-2xl border border-gothic-accent/30 w-full max-w-sm relative shadow-[0_0_50px_rgba(168,85,247,0.2)]">
+      <button (click)="closeLogin()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+      <h3 class="text-2xl font-display font-bold text-gothic-accent mb-8 text-center">System Access</h3>
+      <input [(ngModel)]="loginEmail" placeholder="Email" class="w-full bg-black/50 border border-gray-700 rounded-lg p-3 mb-4 text-white focus:border-gothic-accent focus:outline-none transition-colors">
+      <input type="password" [(ngModel)]="loginPassword" (keyup.enter)="attemptLogin()" placeholder="Password" class="w-full bg-black/50 border border-gray-700 rounded-lg p-3 mb-6 text-white focus:border-gothic-accent focus:outline-none transition-colors">
+      @if (loginError()) { <p class="text-red-400 text-sm mb-4 text-center">{{ loginError() }}</p> }
+      <button (click)="attemptLogin()" class="w-full bg-gradient-to-r from-gothic-accent to-pink-600 text-white font-bold py-3 rounded-lg hover:brightness-110 shadow-lg transition-all">
+         {{ isLoggingIn() ? 'Authenticating...' : 'Login' }}
+      </button>
+    </div>
+  </div>
+}
+
+@if (showAdminPanel()) {
+  <div class="fixed inset-0 z-[100] bg-gray-900/95 backdrop-blur-md flex flex-col font-body text-gray-100">
+    <header class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center shadow-lg">
+      <h2 class="text-xl font-bold text-gothic-accent">Admin Panel</h2>
+      <div class="flex gap-3">
+         <button (click)="saveChanges()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow transition-colors font-bold disabled:opacity-50" [disabled]="isSaving()">
+            {{ isSaving() ? 'Saving...' : 'Save All Changes' }}
+         </button>
+         <button (click)="closeAdminPanel()" class="bg-red-600/20 text-red-400 border border-red-500/50 px-4 py-2 rounded hover:bg-red-600/40">Close</button>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-hidden flex">
+       <aside class="w-64 bg-gray-800/50 border-r border-gray-700 p-4 space-y-2 overflow-y-auto">
+          <button (click)="activeTab.set('personal')" [class.bg-gothic-accent]="activeTab() === 'personal'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Personal Info</button>
+          <button (click)="activeTab.set('education')" [class.bg-gothic-accent]="activeTab() === 'education'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Education</button>
+          <button (click)="activeTab.set('experience')" [class.bg-gothic-accent]="activeTab() === 'experience'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Experience</button>
+          <button (click)="activeTab.set('projects')" [class.bg-gothic-accent]="activeTab() === 'projects'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Projects</button>
+          <button (click)="activeTab.set('skills')" [class.bg-gothic-accent]="activeTab() === 'skills'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Skills</button>
+          <button (click)="activeTab.set('softwares')" [class.bg-gothic-accent]="activeTab() === 'softwares'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">Softwares</button>
+          <button (click)="activeTab.set('qrcodes')" [class.bg-gothic-accent]="activeTab() === 'qrcodes'" class="w-full text-left px-4 py-3 rounded hover:bg-white/5 transition-colors">QR Codes</button>
+       </aside>
+
+       <main class="flex-1 p-8 overflow-y-auto bg-gray-900">
+          <div class="mb-6 flex gap-4 border-b border-gray-700 pb-2">
+             <span class="text-gray-400 text-sm uppercase tracking-widest py-1">Editing Language:</span>
+             <button (click)="editLangTab.set('es')" [class.text-gothic-accent]="editLangTab() === 'es'" [class.font-bold]="editLangTab() === 'es'" class="text-gray-300 hover:text-white transition-colors">Español (ES)</button>
+             <span class="text-gray-600">|</span>
+             <button (click)="editLangTab.set('en')" [class.text-gothic-accent]="editLangTab() === 'en'" [class.font-bold]="editLangTab() === 'en'" class="text-gray-300 hover:text-white transition-colors">English (EN)</button>
+          </div>
+
+          @if (activeTab() === 'personal') {
+             <div class="space-y-6 max-w-4xl">
+                <div class="grid grid-cols-2 gap-4 bg-gray-800 p-4 rounded-lg">
+                   <div>
+                      <label class="text-xs text-gray-500">Full Name (Shared)</label>
+                      <input [(ngModel)]="editData().personal.name" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white">
+                   </div>
+                   <div>
+                      <label class="text-xs text-gray-500">GPA (Shared)</label>
+                      <input [(ngModel)]="editData().personal.gpa" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white">
+                   </div>
+                   <div>
+                      <label class="text-xs text-gray-500">Photo</label>
+                      <input type="file" (change)="onAdminFileSelected($event, 'profile')" class="text-xs text-gray-400">
+                   </div>
+                </div>
+
+                <div class="bg-gray-800 p-6 rounded-lg space-y-4">
+                   @if (editLangTab() === 'es') {
+                      <div><label class="text-xs text-gray-500">Bio (ES)</label><textarea [(ngModel)]="editData().personal.bio_es" rows="4" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></textarea></div>
+                      <div><label class="text-xs text-gray-500">Idiomas (ES)</label><input [(ngModel)]="editData().personal.languages_es" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Nacionalidad (ES)</label><input [(ngModel)]="editData().personal.nationality_es" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Ubicación (ES)</label><input [(ngModel)]="editData().personal.location_es" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Enfoque (ES)</label><input [(ngModel)]="editData().personal.focus_es" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                   } @else {
+                      <div><label class="text-xs text-gray-500">Bio (EN)</label><textarea [(ngModel)]="editData().personal.bio_en" rows="4" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></textarea></div>
+                      <div><label class="text-xs text-gray-500">Languages (EN)</label><input [(ngModel)]="editData().personal.languages_en" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Nationality (EN)</label><input [(ngModel)]="editData().personal.nationality_en" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Location (EN)</label><input [(ngModel)]="editData().personal.location_en" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                      <div><label class="text-xs text-gray-500">Focus (EN)</label><input [(ngModel)]="editData().personal.focus_en" class="w-full bg-gray-700 rounded p-2 border border-gray-600 text-white"></div>
+                   }
+                </div>
+             </div>
+          }
+           @if (activeTab() === 'education') {
+              <button (click)="addEducation()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add Education</button>
+              <div class="space-y-6">
+                @for (e of editData().education; track e; let i = $index) {
+                   <div class="bg-gray-800 p-4 rounded border border-gray-700 relative">
+                      <button (click)="removeEducation(i)" class="absolute top-2 right-2 text-red-500">x</button>
+                      <input [(ngModel)]="e.institution" placeholder="Institution Name" class="w-full bg-gray-900 rounded p-2 mb-2 border border-gray-600 text-white">
+                      <input [(ngModel)]="e.year" placeholder="Year (e.g. 2020 - 2024)" class="w-full bg-gray-900 rounded p-2 mb-4 border border-gray-600 text-white">
+                      @if (editLangTab() === 'es') {
+                         <input [(ngModel)]="e.degree_es" placeholder="Título / Carrera (ES)" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                      } @else {
+                         <input [(ngModel)]="e.degree_en" placeholder="Degree (EN)" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                      }
+                   </div>
+                }
+              </div>
+          }
+           @if (activeTab() === 'experience') {
+              <button (click)="addExperience()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add Experience</button>
+              <div class="space-y-6">
+                @for (e of editData().experience; track e; let i = $index) {
+                   <div class="bg-gray-800 p-4 rounded border border-gray-700 relative">
+                      <button (click)="removeExperience(i)" class="absolute top-2 right-2 text-red-500">x</button>
+                      <input [(ngModel)]="e.company" placeholder="Company Name (Shared)" class="w-full bg-gray-900 rounded p-2 mb-4 border border-gray-600 text-white">
+                      @if (editLangTab() === 'es') {
+                         <input [(ngModel)]="e.role_es" placeholder="Cargo ES" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <input [(ngModel)]="e.duration_es" placeholder="Duración ES" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <textarea [(ngModel)]="e.description_es" placeholder="Descripción ES" class="w-full bg-gray-700 rounded p-2 text-white"></textarea>
+                      } @else {
+                         <input [(ngModel)]="e.role_en" placeholder="Role EN" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <input [(ngModel)]="e.duration_en" placeholder="Duration EN" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <textarea [(ngModel)]="e.description_en" placeholder="Description EN" class="w-full bg-gray-700 rounded p-2 text-white"></textarea>
+                      }
+                   </div>
+                }
+              </div>
+          }
+          @if (activeTab() === 'projects') {
+             <button (click)="addProject()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add Project</button>
+             <div class="space-y-6">
+                @for (p of editData().projects; track p; let i = $index) {
+                   <div class="bg-gray-800 p-4 rounded border border-gray-700 relative">
+                      <button (click)="removeProject(i)" class="absolute top-2 right-2 text-red-500">x</button>
+                      <div class="grid grid-cols-2 gap-4 mb-4">
+                         <div><label class="text-xs text-gray-500">Image</label><input type="file" (change)="onAdminFileSelected($event, 'project', i)"></div>
+                         <div><label class="text-xs text-gray-500">Link</label><input [(ngModel)]="p.link" class="w-full bg-gray-700 rounded p-1 text-white"></div>
+                         <div><label class="text-xs text-gray-500">Tags</label><input [ngModel]="p.tags.join(',')" (ngModelChange)="updateProjectTags(i, $event)" class="w-full bg-gray-700 rounded p-1 text-white"></div>
+                      </div>
+                      @if (editLangTab() === 'es') {
+                         <input [(ngModel)]="p.title_es" placeholder="Título ES" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <textarea [(ngModel)]="p.description_es" placeholder="Descripción ES" class="w-full bg-gray-700 rounded p-2 text-white"></textarea>
+                      } @else {
+                         <input [(ngModel)]="p.title_en" placeholder="Title EN" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                         <textarea [(ngModel)]="p.description_en" placeholder="Description EN" class="w-full bg-gray-700 rounded p-2 text-white"></textarea>
+                      }
+                   </div>
+                }
+             </div>
+          }
+          @if (activeTab() === 'skills') {
+              <button (click)="addSkill()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add Skill</button>
+              <div class="grid grid-cols-3 gap-4">
+                 @for (s of editData().skills; track s; let i = $index) {
+                    <div class="bg-gray-800 p-3 rounded border border-gray-700 relative">
+                       <button (click)="removeSkill(i)" class="absolute top-1 right-1 text-red-500 text-xs">x</button>
+                       @if (editLangTab() === 'es') {
+                          <input [(ngModel)]="s.name_es" placeholder="Nombre ES" class="w-full bg-gray-700 mb-1 rounded p-1 text-sm text-white">
+                       } @else {
+                          <input [(ngModel)]="s.name_en" placeholder="Name EN" class="w-full bg-gray-700 mb-1 rounded p-1 text-sm text-white">
+                       }
+                       <input [(ngModel)]="s.icon" placeholder="Icon URL" class="w-full bg-gray-900 rounded p-1 text-xs text-gray-500">
+                    </div>
+                 }
+              </div>
+          }
+          @if (activeTab() === 'softwares') {
+              <button (click)="addSoftware()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add Software</button>
+              <div class="grid grid-cols-3 gap-4">
+                 @for (s of editData().softwares; track s; let i = $index) {
+                    <div class="bg-gray-800 p-3 rounded border border-gray-700 relative">
+                       <button (click)="removeSoftware(i)" class="absolute top-1 right-1 text-red-500 text-xs">x</button>
+                       <input [(ngModel)]="s.name" placeholder="Name" class="w-full bg-gray-700 mb-1 rounded p-1 text-sm text-white">
+                       <input type="file" (change)="onAdminFileSelected($event, 'software', i)" class="text-xs text-gray-500">
+                    </div>
+                 }
+              </div>
+          }
+           @if (activeTab() === 'qrcodes') {
+              <button (click)="addQRCode()" class="mb-4 bg-blue-600 px-3 py-1 rounded text-sm">+ Add QR Code</button>
+              <div class="space-y-4">
+                 @for (q of editData().qrCodes; track q; let i = $index) {
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700 relative">
+                       <button (click)="removeQRCode(i)" class="absolute top-2 right-2 text-red-500">x</button>
+                       @if (editLangTab() === 'es') {
+                          <input [(ngModel)]="q.platform_es" placeholder="Plataforma ES" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                       } @else {
+                          <input [(ngModel)]="q.platform_en" placeholder="Platform EN" class="w-full bg-gray-700 mb-2 rounded p-2 text-white">
+                       }
+                       <input [(ngModel)]="q.link" placeholder="Link URL" class="w-full bg-gray-900 mb-2 rounded p-2 text-sm text-gray-300">
+                       <label class="text-xs text-gray-500">QR Image</label>
+                       <input type="file" (change)="onAdminFileSelected($event, 'qr', i)">
+                    </div>
+                 }
+              </div>
+          }
+
+       </main>
+    </div>
+  </div>
+}

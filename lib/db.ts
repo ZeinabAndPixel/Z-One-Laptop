@@ -158,3 +158,41 @@ export const updateOrderStatus = async (id: string, status: string) => {
     throw error;
   }
 };
+
+// --- BCV RATE HELPERS ---
+export const getBcvRateCurrent = async () => {
+  try {
+    const { rows } = await pool.query('SELECT rate, set_by, updated_at FROM bcv_rate_current WHERE id = 1 LIMIT 1');
+    if (rows.length === 0) return null;
+    return rows[0];
+  } catch (error) {
+    console.error('Error obteniendo tasa BCV:', error);
+    return null;
+  }
+};
+
+export const setBcvRate = async (rate: number, setBy: string | null = null, note: string | null = null) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    await client.query(
+      'INSERT INTO bcv_rates_history (rate, set_by, note) VALUES ($1, $2, $3)',
+      [rate, setBy, note]
+    );
+
+    await client.query(
+      `INSERT INTO bcv_rate_current (id, rate, set_by, updated_at) VALUES (1, $1, $2, NOW()) ON CONFLICT (id) DO UPDATE SET rate = EXCLUDED.rate, set_by = EXCLUDED.set_by, updated_at = EXCLUDED.updated_at`,
+      [rate, setBy]
+    );
+
+    await client.query('COMMIT');
+    return true;
+  } catch (error: any) {
+    await client.query('ROLLBACK');
+    console.error('Error actualizando BCV:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};

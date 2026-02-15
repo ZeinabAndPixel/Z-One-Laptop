@@ -1,0 +1,1 @@
+// This file is deprecated. Interfaces have been moved to src/models.ts

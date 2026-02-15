@@ -22,8 +22,19 @@
       "@/*": [
         "./*"
       ]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    }
+  },
+  "include": [
+    "index.tsx",
+    "App.tsx",
+    "components/**/*",
+    "lib/**/*",
+    "api/**/*",
+    "types.ts",
+    "constants.ts",
+    "vite-env.d.ts"
+  ],
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true
   }
 }
